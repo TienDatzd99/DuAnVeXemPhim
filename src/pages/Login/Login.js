@@ -17,7 +17,7 @@ export default function Login() {
     onSubmit: values => {
       const action = dangNhapAction(values);
       dispatch(action)
-      console.log("ressulxt",values)
+      console.log("s",values)
     },
   });
   return (
@@ -28,7 +28,7 @@ export default function Login() {
     }}>
       <h3>Login Here</h3>
       <label htmlFor="username">Username</label>
-      <input type="text" placeholder="Email or Phone" id="username" name='taiKhoan' onChange={formik.handleChange} />
+      <input type="text" placeholder="Input Account" id="username" name='taiKhoan' onChange={formik.handleChange} />
       <label htmlFor="password">Password</label>
       <input type="password" placeholder="Password" id="password" name='matKhau' onChange={formik.handleChange} />
       <div className='flex justify-end p-3 '>

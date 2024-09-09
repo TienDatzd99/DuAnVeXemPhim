@@ -8,13 +8,14 @@ console.log("asd",thongTinDangNhap)
         try {
 
             const result = await quanLyNguoiDungService.DangNhap(thongTinDangNhap);
-            console.log(result)
-            if (result.data.status === 200) {
+            
+        
+                console.log("sas",result)
                 dispatch({
                     type: DANG_NHAP_ACTION,
                     userLogin: result.data.content,
                 })
-            }
+            
         } catch (errors) {
             console.log(errors)
         }
