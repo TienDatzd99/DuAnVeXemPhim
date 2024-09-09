@@ -1,6 +1,17 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
+import _ from 'lodash'
+export default function Footer(props) {
 
-export default function Footer() {
+
+    const { heThongRapChieu } = useSelector(state => state.QuanLyRapReducer)
+    console.log("aa",heThongRapChieu)
+   
+    const arrHeThongRap = _.map(heThongRapChieu, (heThongRap) => {
+        return  _.pick(heThongRap, ['maHeThongRap', 'tenHeThongRap', 'logo'])
+    })
+    console.log("bv",arrHeThongRap)
+
     return (
         <div>
             <footer className="px-4 divide-y dark:bg-zinc-800 text-white">
@@ -15,7 +26,17 @@ export default function Footer() {
                             <span className="self-center text-2xl font-semibold">Brand name</span>
                         </a>
                     </div>
-                    <div className="grid grid-cols-2 text-sm gap-x-3 gap-y-8 lg:w-2/3 sm:grid-cols-4">
+                    <div className="grid grid-cols-2 text-sm gap-x-3 gap-y-8 lg:w-2/3 sm:grid-cols-5">
+                        <div className="space-y-3 mr-10">
+                            <h3 className="text-center tracking-wide uppercase">PARTNER</h3>
+                            <ul className="space-y-1  grid grid-cols-2">
+                                {arrHeThongRap.map((htr, index) => {
+                                    return <li className="flex justify-center items-center"   key={index}>
+                                        <img src={htr.logo} style={{width:60 , height: 60}} />
+                                    </li>
+                                })}
+                            </ul>
+                        </div>
                         <div className="space-y-3">
                             <h3 className="tracking-wide uppercase">Product</h3>
                             <ul className="space-y-1">

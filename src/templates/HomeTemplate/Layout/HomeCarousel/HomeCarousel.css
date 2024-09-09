@@ -1,0 +1,4 @@
+.slick-dots li button:before {
+    content: none; /* Xóa nội dung */
+    display: none; /* Ẩn nút */
+}

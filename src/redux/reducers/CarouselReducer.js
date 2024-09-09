@@ -18,8 +18,10 @@ export const CarouselReducer = (state = stateDefault, action) => {
     switch (action.type) {
 
         case SET_CAROUSEL: {
-            state.arrImg = action.arrImg;
-            return {...state}
+            
+            return {...state,
+                arrImg : action.arrImg
+            }
         }
 
         default: return { ...state }

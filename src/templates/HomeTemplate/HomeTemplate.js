@@ -7,7 +7,7 @@ export default function HomeTemplate({Component}) {
   return (
    <>
    <Header/>
-   <HomeCarousel/>
+  
    <Component/>
    <Footer/>
    </>
