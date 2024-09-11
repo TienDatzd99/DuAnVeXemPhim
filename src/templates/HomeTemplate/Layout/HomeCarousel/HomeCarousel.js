@@ -5,12 +5,12 @@ import { getCarouselAction } from '../../../../redux/actions/CarouselActions.js'
 import './HomeCarousel.css';
 
 const contentStyle = {
-    height: '1100px',
+    height: '900px',
     color: '#fff',
     lineHeight: '160px',
     textAlign: 'center',
     backgroundPosition: 'center',
-    backgroundSize: '100%',
+    backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
 };
 
@@ -28,7 +28,7 @@ export default function HomeCarousel(props) {
             return (
                 <div key={index}>
                     <div style={{ ...contentStyle, backgroundImage: `url(${item.hinhAnh})` }}>
-                      
+
                     </div>
                 </div>
             );
@@ -36,8 +36,10 @@ export default function HomeCarousel(props) {
     }
 
     return (
-        <Carousel effect="fade" style={{ width: '100%', padding: 0, margin: 0 }}>
+        <Carousel autoplay >
+
             {renderImg()}
+
         </Carousel>
     )
 }

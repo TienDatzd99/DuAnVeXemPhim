@@ -26,3 +26,6 @@ box-shadow: 0 8px 32px 0 rgba( 0, 0, 0, 0.18 );
   border: 1px solid rgba( 255, 255, 255, 0.18 );
   z-index: 4;
 }
+.transparent-black-background {
+  background-color: rgba(0, 0, 0, 0.3); /* 0.5 là độ trong suốt từ 0 (hoàn toàn trong suốt) đến 1 (không trong suốt) */
+}

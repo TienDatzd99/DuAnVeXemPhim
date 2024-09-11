@@ -1,0 +1,56 @@
+
+
+.ghe { /* ghế thường */
+    width: 35px;
+    height: 35px;
+    border:none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 15px;
+    background-color: rgb(123, 122, 122);
+    color: #fff;
+  }
+  
+  
+  .gheDaDat {
+    background-color: rgb(232, 76, 76);
+    cursor: no-drop;
+  }
+  
+  .gheDangDat {
+    background-color: rgb(18, 176, 18) !important;
+  }
+  
+  
+  .gheVip {
+    background-color: rgb(228, 74, 8);
+  }
+
+  .gheDaDuocDat { /*ghế được chính mình đặt */
+    background-color: rgb(246, 246, 246);
+    -webkit-box-shadow: -1px 2px 18px -6px orange; 
+    box-shadow: -1px 2px 18px -6px orange;
+    color: orange !important;
+    border: 1px solid orange;
+
+  }
+
+  .gheKhachDat {
+    background-color: rgb(242, 25, 191) !important;
+    cursor: no-drop
+    ;
+  }
+
+  .table-cell-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+  }
+  td {
+    vertical-align: middle; /* Căn giữa theo chiều dọc */
+    text-align: center; /* Căn giữa theo chiều ngang */
+  }
+  .transparent-checkout-black-background {
+    background-color: rgba(0, 0, 0, 0.2); /* 0.5 là độ trong suốt từ 0 (hoàn toàn trong suốt) đến 1 (không trong suốt) */
+  }

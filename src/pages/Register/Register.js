@@ -26,7 +26,7 @@ export default function Register() {
             <NavLink to={'/login'} className='text-blue-500'> Login</NavLink>
            
         </div>
-        <button className='mt-1'>Register</button>
+        <button className='mt-1 buttonUser'>Register</button>
         <div className="social">
           <div className="go"><i className="fab fa-google" />  Google</div>
           <div className="fb"><i className="fab fa-facebook" />  Facebook</div>

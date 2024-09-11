@@ -2,3 +2,6 @@
     content: none; /* Xóa nội dung */
     display: none; /* Ẩn nút */
 }
+button{
+    margin:0 
+}

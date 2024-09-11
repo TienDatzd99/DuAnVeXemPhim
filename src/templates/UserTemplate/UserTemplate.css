@@ -84,8 +84,8 @@ input{
 ::placeholder{
     color: #e5e5e5;
 }
-button{
-    margin-top: 50px;
+.buttonUser{
+    
     width: 100%;
     background-color: #ffffff;
     color: #080710;

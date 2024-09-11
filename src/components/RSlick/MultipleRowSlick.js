@@ -71,19 +71,21 @@ export default function MultipleRowSlick(props) {
 
   return (
     <div>
-      <button className={`${styleSlick[activeClassDC]} px-8 py-3 font-semibold rounded bg-gray-800 text-white mr-2`} onClick={() => {
-        const action = { type: SET_FILM_DANG_CHIEU }
+      <div className='flex mb-8 justify-center'>
+        <button className={`${styleSlick[activeClassDC]} ${styleSlick['jss78']} duration-150 hover:scale-125 hover:text-orange-400  rounded text-black mr-7` }  onClick={() => {
+          const action = { type: SET_FILM_DANG_CHIEU }
 
-        dispatch(action)
-      }}
-      >PHIM ĐANG CHIẾU</button>
-      <button className={`${styleSlick[activeClassSC]} px-8 py-3 font-semibold rounded bg-white text-gray-800 border-gray-800 border`
-      } onClick={() => {
-        const action = {
-          type: SET_FILM_SAP_CHIEU
-        }
-        dispatch(action)
-      }}>PHIM SẮP CHIẾU</button>
+          dispatch(action)
+        }}
+        >PHIM ĐANG CHIẾU</button>
+        <button className={`${styleSlick[activeClassSC]} ${styleSlick['jss78']} duration-150 hover:scale-125 hover:text-orange-400  rounded text-black ml-7`
+        } onClick={() => {
+          const action = {
+            type: SET_FILM_SAP_CHIEU
+          }
+          dispatch(action)
+        }}>PHIM SẮP CHIẾU</button>
+      </div>
       <Slider {...settings}>
         {renderFilms()}
 

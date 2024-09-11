@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import HomeMenu from './HomeMenu/HomeMenu'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -9,6 +9,7 @@ import { layDanhSachHeThongRapAction } from '../../redux/actions/QuanLyRapAction
 import HomeCarousel from '../../templates/HomeTemplate/Layout/HomeCarousel/HomeCarousel'
 export default function Home() {
   const dispatch = useDispatch()
+
   useEffect(() => {
     const action = layDanhSachPhimAction();
     dispatch(action)
@@ -17,6 +18,9 @@ export default function Home() {
   const { heThongRapChieu } = useSelector(state => state.QuanLyRapReducer)
   const { arrFilm } = useSelector(state => state.QuanLyPhimReducer)
   console.log(heThongRapChieu)
+
+
+  
   // const renderFilms = () => {
   //   return arrFilm.map((phim, index) => {
   //     return <div key={index} className="p-4 lg:w-1/3">

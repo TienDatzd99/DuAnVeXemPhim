@@ -1,5 +1,5 @@
 import { quanLyNguoiDungService } from "../../services/QuanLyNguoiDung"
-import { DANG_NHAP_ACTION } from "./types/QuanLyNguoiDungType";
+import { DANG_NHAP_ACTION, SET_THONG_TIN_NGUOI_DUNG } from "./types/QuanLyNguoiDungType";
 
 export const dangNhapAction = (thongTinDangNhap) => {
 console.log("asd",thongTinDangNhap)
@@ -10,7 +10,7 @@ console.log("asd",thongTinDangNhap)
             const result = await quanLyNguoiDungService.DangNhap(thongTinDangNhap);
             
         
-                console.log("sas",result)
+                console.log("sszasss",result)
                 dispatch({
                     type: DANG_NHAP_ACTION,
                     userLogin: result.data.content,
@@ -24,3 +24,28 @@ console.log("asd",thongTinDangNhap)
 
 
 }
+
+export const layThongTinNguoiDungAction = (thongTinNguoiDung) => {
+  console.log('thongTinxcNguoiDung', thongTinNguoiDung);
+   
+        return async (dispatch) => {
+    
+            try {
+    
+                const result = await quanLyNguoiDungService.LayThongTinNguoiDung();
+                
+            
+                    console.log("sszacsss",result)
+                    dispatch({
+                        type: SET_THONG_TIN_NGUOI_DUNG,
+                        thongTinNguoiDung: result.data.content,
+                    })
+                
+            } catch (errors) {
+                console.log(errors)
+            }
+    
+        }
+    
+    
+    }
