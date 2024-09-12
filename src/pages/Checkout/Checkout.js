@@ -2,7 +2,7 @@ import React, { Fragment, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import style from './Checkout.module.css'
 import './Checkout.css'
-import { datVe, datVeAction, layChiTietPhongVeAction } from '../../redux/actions/QuanLyDatVeAction'
+import { datGheAction, datVe, datVeAction, layChiTietPhongVeAction } from '../../redux/actions/QuanLyDatVeAction'
 import { useParams } from 'react-router-dom'
 import { CheckOutlined, CloseOutlined, UserOutlined, SmileOutlined, HomeOutlined } from '@ant-design/icons'
 import { DAT_VE } from '../../redux/actions/types/QuanLyDatVeType'
@@ -12,16 +12,16 @@ import { ThongTinDatVe } from '../../_core/models/ThongTinDatVe'
 import { Tabs } from 'antd';
 import moment from 'moment'
 import { layThongTinNguoiDungAction } from '../../redux/actions/QuanLyNguoiDungAction'
+import Loading from '../../components/Loading/Loading'
+import { connection } from '../..'
 function Checkout() {
 
 
   const { userLogin } = useSelector(state => state.QuanLyNguoiDungReducer)
 
 
-  const { chiTietPhongVe, danhSachGheDangDat } = useSelector(state => state.QuanLyDatVeReducer)
-  console.log("1s", chiTietPhongVe)
+  const { chiTietPhongVe, danhSachGheDangDat, danhSachGheKhachDat } = useSelector(state => state.QuanLyDatVeReducer)
 
-  console.log("1s", danhSachGheDangDat)
 
 
   const { id } = useParams()
@@ -31,18 +31,83 @@ function Checkout() {
   useEffect(() => {
     const action = layChiTietPhongVeAction(id)
     dispatch(action)
+    if (connection.state === 'Connected') {
+      // Client connected
+      connection.on('datVeThanhCong', () => {
+        dispatch(action);
+      });
+
+      // Load the list of booked seats from the server
+      connection.invoke('loadDanhSachGhe', id);
+    } else {
+      console.error("Connection is not in the 'Connected' state");
+    }
+
+    //Load danh sách ghế đang đặt từ server về (lắng nghe tín hiệu từ server trả về)
+    connection.on("loadDanhSachGheDaDat", (dsGheKhachDat) => {
+      console.log('daanhSachGheKhachDat', dsGheKhachDat);
+      //Bước 1: Loại mình ra khỏi danh sách 
+      dsGheKhachDat = dsGheKhachDat.filter(item => item.taiKhoan !== userLogin.taiKhoan);
+      //Bước 2 gộp danh sách ghế khách đặt ở tất cả user thành 1 mảng chung 
+
+      let arrGheKhachDat = dsGheKhachDat.reduce((result, item, index) => {
+        let arrGhe = JSON.parse(item.danhSachGhe);
+
+        return [...result, ...arrGhe];
+      }, []);
+
+      //Đưa dữ liệu ghế khách đặt cập nhật redux
+      arrGheKhachDat = _.uniqBy(arrGheKhachDat, 'maGhe');
+
+      //Đưa dữ liệu ghế khách đặt về redux
+      dispatch({
+        type: 'DAT_GHE',
+        arrGheKhachDat
+      })
+
+    })
+
+    //Cài đặt sự kiện khi reload trang
+    window.addEventListener("beforeunload", clearGhe);
+
+    return () => {
+      clearGhe();
+      window.removeEventListener('beforeunload', clearGhe);
+    }
+
   }, [])
 
+
+  const clearGhe = function (event) {
+
+    connection.invoke('huyDat', userLogin.taiKhoan, id);
+
+
+  }
+
+
+
+
+
+
+
+
+
   if (!chiTietPhongVe || !chiTietPhongVe.thongTinPhim) {
-    return <div>Loading...</div>;
+    return <div><Loading /></div>;
   }
   const { thongTinPhim, danhSachGhe } = chiTietPhongVe
 
   const renderSeats = () => {
     return danhSachGhe.map((ghe, index) => {
       let classGheVip = ghe.loaiGhe === 'Vip' ? 'gheVip' : '';
-      let classGheDaDat = ghe.daDat === true ? 'gheDaDat' : '';
+      let classGheDaDat = ghe.daDat === true ? 'gheDaDat ' : '';
       let classGheDangDat = ''
+      let classGheKhachDat = ''
+      let indexGheKD = danhSachGheKhachDat.findIndex(GheKD => GheKD.maGhe === ghe.maGhe)
+      if (indexGheKD !== -1) {
+        classGheKhachDat = 'gheKhachDat'
+      }
       let indexGheDD = danhSachGheDangDat.findIndex(GheDD => GheDD.maGhe === ghe.maGhe)
       if (indexGheDD !== -1) {
         classGheDangDat = 'gheDangDat'
@@ -56,22 +121,26 @@ function Checkout() {
       return <Fragment key={index}>
 
 
-        <button className={`${classGheVip} ${classGheDangDat} ${classGheDaDat} ${classGheMinhDaDat} ghe text-center`} key={index}
+        <button disabled={ghe.daDat || classGheMinhDaDat !== ''} className={`${classGheVip} ${classGheDangDat} ${classGheDaDat} ${classGheMinhDaDat} ${classGheKhachDat} ghe text-center`} key={index}
 
           onClick={() => {
-
-
-
-            dispatch({
-              type: DAT_VE,
-              gheDuocChon: ghe
-            })
+            const action = datGheAction(ghe, id)
+            dispatch(
+              //   {
+              //   type: DAT_VE,
+              //   gheDuocChon: ghe
+              // }
+              action
+            )
           }}>
 
 
 
 
-          {ghe.daDat ? classGheMinhDaDat != '' ? <UserOutlined /> : <CloseOutlined style={{ marginBottom: 7.5, fontWeight: 'bold' }} /> : ghe.stt}
+          {ghe.daDat ? classGheMinhDaDat !== '' ?
+            <UserOutlined /> :
+            <CloseOutlined style={{ marginBottom: 7.5, fontWeight: 'bold' }} />
+            : classGheKhachDat !== '' ? <SmileOutlined /> : ghe.stt}
 
 
         </button>
@@ -232,10 +301,27 @@ const items = [
   },
 
 ];
-const App = () =>
-  <div>
-    <Tabs defaultActiveKey="1" items={items} className='' onChange={onChange} />;
+function App() {
+  const { tabActive } = useSelector(state => state.QuanLyDatVeReducer);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: 'CHANGE_TAB_ACTIVE',
+        number: '1'
+      })
+    }
+  }, [])
+  return <div>
+    <Tabs defaultActiveKey='1' activeKey={tabActive} items={items} className='' onChange={(key) => {
+
+      dispatch({
+        type: 'CHANGE_TAB_ACTIVE',
+        number: key.toString()
+      })
+    }} />;
   </div>
+}
 export default App;
 
 
@@ -243,35 +329,35 @@ function KetQuaDatVe() {
   const dispatch = useDispatch();
   const { userLogin } = useSelector(state => state.QuanLyNguoiDungReducer);
   const { thongTinNguoiDung } = useSelector(state => state.QuanLyNguoiDungReducer);
-  console.log('thongTinxcNguoiDung', thongTinNguoiDung);
-  
+  console.log('thongsTinxcNguoiDung', thongTinNguoiDung);
+
 
 
   useEffect(() => {
-      const action = layThongTinNguoiDungAction();
-      dispatch(action)
+    const action = layThongTinNguoiDungAction(thongTinNguoiDung);
+    dispatch(action)
   }, [])
 
-  
+
 
   const renderTicketItem = function () {
-      return thongTinNguoiDung.thongTinDatVe?.map((ticket, index) => {
-          const seats = _.first(ticket.danhSachGhe);
+    return thongTinNguoiDung.thongTinDatVe?.map((ticket, index) => {
+      const seats = _.first(ticket.danhSachGhe);
 
-          return <div className="p-2 lg:w-1/3 md:w-1/2 w-full" key={index}>
-              <div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-                  <img alt="team" className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4" src={ticket.hinhAnh} />
-                  <div className="flex-grow">
-                      <h2 className="text-pink-500 title-font font-medium text-2xl">{ticket.tenPhim}</h2>
-                      <p className="text-gray-500"><span className="font-bold">Giờ chiếu:</span> {moment(ticket.ngayDat).format('hh:mm A')} - <span className="font-bold">Ngày chiếu:</span>  {moment(ticket.ngayDat).format('DD-MM-YYYY')} .</p>
-                      <p><span className="font-bold">Địa điểm:</span> {seats.tenHeThongRap}   </p>
-                      <p>
-                          <span className="font-bold">Tên rạp:</span>  {seats.tenCumRap} - <span className="font-bold">Ghế:</span>  {ticket.danhSachGhe.map((ghe, index) => { return <span className="text-green-500 text-xl" key={index}> [ {ghe.tenGhe} ] </span> })}
-                      </p>
-                  </div>
-              </div>
+      return <div className="p-2 lg:w-1/3 md:w-1/2 w-full" key={index}>
+        <div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
+          <img alt="team" className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4" src={ticket.hinhAnh} />
+          <div className="flex-grow">
+            <h2 className="text-pink-500 title-font font-medium text-2xl">{ticket.tenPhim}</h2>
+            <p className="text-gray-500"><span className="font-bold">Giờ chiếu:</span> {moment(ticket.ngayDat).format('hh:mm A')} - <span className="font-bold">Ngày chiếu:</span>  {moment(ticket.ngayDat).format('DD-MM-YYYY')} .</p>
+            <p><span className="font-bold">Địa điểm:</span> {seats.tenHeThongRap}   </p>
+            <p>
+              <span className="font-bold">Tên rạp:</span>  {seats.tenCumRap} - <span className="font-bold">Ghế:</span>  {ticket.danhSachGhe.map((ghe, index) => { return <span className="text-green-500 text-xl" key={index}> [ {ghe.tenGhe} ] </span> })}
+            </p>
           </div>
-      })
+        </div>
+      </div>
+    })
   }
 
   return <div className="p-5">

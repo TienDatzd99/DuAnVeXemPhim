@@ -41,7 +41,7 @@ export const QuanLyNguoiDungReducer = (state = stateDefault, action) => {
             }
         }
         case SET_THONG_TIN_NGUOI_DUNG:{
-            console.log(action)
+            console.log("assxx",action)
 
             return{
                 ...state,

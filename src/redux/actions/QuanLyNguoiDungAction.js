@@ -10,11 +10,12 @@ console.log("asd",thongTinDangNhap)
             const result = await quanLyNguoiDungService.DangNhap(thongTinDangNhap);
             
         
-                console.log("sszasss",result)
+                console.log("sszaasss",result)
                 dispatch({
                     type: DANG_NHAP_ACTION,
                     userLogin: result.data.content,
                 })
+                
             
         } catch (errors) {
             console.log(errors)
@@ -26,7 +27,7 @@ console.log("asd",thongTinDangNhap)
 }
 
 export const layThongTinNguoiDungAction = (thongTinNguoiDung) => {
-  console.log('thongTinxcNguoiDung', thongTinNguoiDung);
+  console.log('thongzzTinxscNguoixDung', thongTinNguoiDung);
    
         return async (dispatch) => {
     
@@ -35,7 +36,7 @@ export const layThongTinNguoiDungAction = (thongTinNguoiDung) => {
                 const result = await quanLyNguoiDungService.LayThongTinNguoiDung();
                 
             
-                    console.log("sszacsss",result)
+                    console.log("1sssssas",result)
                     dispatch({
                         type: SET_THONG_TIN_NGUOI_DUNG,
                         thongTinNguoiDung: result.data.content,
