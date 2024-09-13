@@ -17,15 +17,15 @@ export default function Detail() {
     console.log("das", { FilmDetail })
     const kiemTraDangNhap = (lichChieu) => {
         return userLogin.accessToken
-          ? `/checkout/${lichChieu.maLichChieu}`
-          : `/login`;
-      };
+            ? `/checkout/${lichChieu.maLichChieu}`
+            : `/login`;
+    };
     const dispatch = useDispatch()
     useEffect(() => {
 
         dispatch(layThongTinChiTietPhimAction(id))
     }, [])
-   
+
     return (
         <div style={{ backgroundImage: `url(${FilmDetail.FilmDetail.hinhAnh})`, backgroundSize: "100%", backgroundPosition: 'center' }}>
             <div className="upper-layer w-full flex-wrap flex-col transparent-black-background">
@@ -65,9 +65,13 @@ export default function Detail() {
 
 
 
-                <>
-                    <Tabs defaultActiveKey="1" centered style={{minWidth:900, backgroundColor: "white" ,marginTop:50}} >
-                        <TabPane tab="Lịch chiếu" key="1" style={{ minHeight: 760, backgroundColor: "white" }}>
+                <div className="mt-10  w-2/3 container bg-white px-5 py-5 flex justify-center" >
+                    <Tabs defaultActiveKey="1" centered 
+                    //style={{ minWidth: 900, backgroundColor: "white", marginTop: 50 }} 
+                    >
+                        <TabPane tab="Lịch chiếu" key="1" 
+                       // style={{ minHeight: 760, backgroundColor: "white" }}
+                        >
                             <div >
                                 <Tabs tabPosition={'left'} >
                                     {FilmDetail.FilmDetail.heThongRapChieu?.map((htr, index) => {
@@ -84,7 +88,7 @@ export default function Detail() {
                                                     <div className="flex flex-row">
                                                         <img style={{ width: 60, height: 60 }} src={cumRap.hinhAnh} alt="..." />
                                                         <div className="ml-2">
-                                                            <p style={{ fontSize: 20, fontWeight: 'bold', lineHeight: 1 ,}} >{cumRap.tenCumRap}</p>
+                                                            <p style={{ fontSize: 20, fontWeight: 'bold', lineHeight: 1, }} >{cumRap.tenCumRap}</p>
                                                             <p className="text-gray-400" style={{ marginTop: 0 }}>{cumRap.diaChi}</p>
                                                         </div>
                                                     </div>
@@ -114,7 +118,7 @@ export default function Detail() {
                             Đánh giá
                         </TabPane>
                     </Tabs>
-                </>
+                </div>
             </div>
 
         </div>

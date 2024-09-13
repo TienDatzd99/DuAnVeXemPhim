@@ -47,33 +47,33 @@ export const datVeAction = (ThongTinDatVe) => {
         }
     }
 }
-export const datGheAction = (ghe,maLichChieu) => {
+// export const datGheAction = (ghe,maLichChieu) => {
 
 
-    return async (dispatch,getState) => {
+//     return async (dispatch,getState) => {
 
-        //Đưa thông tin ghế lên reducer
-        await dispatch({
-            type: DAT_VE,
-            gheDuocChon: ghe
-        });
+//         //Đưa thông tin ghế lên reducer
+//         await dispatch({
+//             type: DAT_VE,
+//             gheDuocChon: ghe
+//         });
 
-        //Call api về backend 
-        let danhSachGheDangDat = getState().QuanLyDatVeReducer.danhSachGheDangDat;
-        let taiKhoan = getState().QuanLyNguoiDungReducer.userLogin.taiKhoan;
+//         //Call api về backend 
+//         let danhSachGheDangDat = getState().QuanLyDatVeReducer.danhSachGheDangDat;
+//         let taiKhoan = getState().QuanLyNguoiDungReducer.userLogin.taiKhoan;
 
-        console.log('danhSachGheDangDat',danhSachGheDangDat);
-        console.log('taiKhoan',taiKhoan);
-        console.log('maLichChieu',maLichChieu);
-        //Biến mảng thành chuỗi
-        danhSachGheDangDat = JSON.stringify(danhSachGheDangDat);
+//         console.log('danhSachGheDangDat',danhSachGheDangDat);
+//         console.log('taiKhoan',taiKhoan);
+//         console.log('maLichChieu',maLichChieu);
+//         //Biến mảng thành chuỗi
+//         danhSachGheDangDat = JSON.stringify(danhSachGheDangDat);
 
-        //Call api signalR
-        connection.invoke('datGhe',taiKhoan,danhSachGheDangDat,maLichChieu);
-
-
+//         //Call api signalR
+//         connection.invoke('datGhe',taiKhoan,danhSachGheDangDat,maLichChieu);
 
 
-    }
 
-}
+
+//     }
+
+// }

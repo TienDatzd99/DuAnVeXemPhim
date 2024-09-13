@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import style from './Checkout.module.css'
 import './Checkout.css'
 import { datGheAction, datVe, datVeAction, layChiTietPhongVeAction } from '../../redux/actions/QuanLyDatVeAction'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { CheckOutlined, CloseOutlined, UserOutlined, SmileOutlined, HomeOutlined } from '@ant-design/icons'
 import { DAT_VE } from '../../redux/actions/types/QuanLyDatVeType'
 import _ from 'lodash'
@@ -14,6 +14,7 @@ import moment from 'moment'
 import { layThongTinNguoiDungAction } from '../../redux/actions/QuanLyNguoiDungAction'
 import Loading from '../../components/Loading/Loading'
 import { connection } from '../..'
+import { TOKEN, USER_LOGIN } from '../../util/settings/config'
 function Checkout() {
 
 
@@ -31,59 +32,60 @@ function Checkout() {
   useEffect(() => {
     const action = layChiTietPhongVeAction(id)
     dispatch(action)
-    if (connection.state === 'Connected') {
-      // Client connected
-      connection.on('datVeThanhCong', () => {
-        dispatch(action);
-      });
-
-      // Load the list of booked seats from the server
-      connection.invoke('loadDanhSachGhe', id);
-    } else {
-      console.error("Connection is not in the 'Connected' state");
-    }
-
-    //Load danh sách ghế đang đặt từ server về (lắng nghe tín hiệu từ server trả về)
-    connection.on("loadDanhSachGheDaDat", (dsGheKhachDat) => {
-      console.log('daanhSachGheKhachDat', dsGheKhachDat);
-      //Bước 1: Loại mình ra khỏi danh sách 
-      dsGheKhachDat = dsGheKhachDat.filter(item => item.taiKhoan !== userLogin.taiKhoan);
-      //Bước 2 gộp danh sách ghế khách đặt ở tất cả user thành 1 mảng chung 
-
-      let arrGheKhachDat = dsGheKhachDat.reduce((result, item, index) => {
-        let arrGhe = JSON.parse(item.danhSachGhe);
-
-        return [...result, ...arrGhe];
-      }, []);
-
-      //Đưa dữ liệu ghế khách đặt cập nhật redux
-      arrGheKhachDat = _.uniqBy(arrGheKhachDat, 'maGhe');
-
-      //Đưa dữ liệu ghế khách đặt về redux
-      dispatch({
-        type: 'DAT_GHE',
-        arrGheKhachDat
-      })
-
-    })
-
-    //Cài đặt sự kiện khi reload trang
-    window.addEventListener("beforeunload", clearGhe);
-
-    return () => {
-      clearGhe();
-      window.removeEventListener('beforeunload', clearGhe);
-    }
-
   }, [])
 
+  //Có 1 client nào thực hiện việc đặt vé thành công mình sẽ load lại danh sách phòng vé của lịch chiếu đó
+  //             connection.on('datVeThanhCong', () =>  {
+  //               dispatch(action);
+  //           })
 
-  const clearGhe = function (event) {
-
-    connection.invoke('huyDat', userLogin.taiKhoan, id);
 
 
-  }
+  //           //Vừa vào trang load tất cả ghế của các người khác đang đặt
+  //           connection.invoke('loadDanhSachGhe',id);
+
+
+  //           //Load danh sách ghế đang đặt từ server về (lắng nghe tín hiệu từ server trả về)
+  //           connection.on("loadDanhSachGheDaDat", (dsGheKhachDat) => {
+  //               console.log('danhSachsGheKhachDat',dsGheKhachDat);
+  //               //Bước 1: Loại mình ra khỏi danh sách 
+  //               dsGheKhachDat = dsGheKhachDat.filter(item => item.taiKhoan !== userLogin.taiKhoan);
+  //               //Bước 2 gộp danh sách ghế khách đặt ở tất cả user thành 1 mảng chung 
+
+  //               let arrGheKhachDat = dsGheKhachDat.reduce((result,item,index)=>{
+  //                   let arrGhe = JSON.parse(item.danhSachGhe);
+
+  //                   return [...result,...arrGhe];
+  //               },[]);
+
+  //               //Đưa dữ liệu ghế khách đặt cập nhật redux
+  //               arrGheKhachDat = _.uniqBy(arrGheKhachDat,'maGhe');
+
+  //               //Đưa dữ liệu ghế khách đặt về redux
+  //               dispatch({
+  //                   type:'DAT_GHE',
+  //                   arrGheKhachDat
+  //               })
+
+  //            })
+
+  //            //Cài đặt sự kiện khi reload trang
+  //            window.addEventListener("beforeunload", clearGhe);
+
+  //            return () => {
+  //                clearGhe();
+  //                window.removeEventListener('beforeunload',clearGhe);
+  //            }
+
+  //  
+
+
+  //   const clearGhe = function(event) {
+
+  //     connection.invoke('huyDat',userLogin.taiKhoan,id);
+
+
+  // }
 
 
 
@@ -124,13 +126,13 @@ function Checkout() {
         <button disabled={ghe.daDat || classGheMinhDaDat !== ''} className={`${classGheVip} ${classGheDangDat} ${classGheDaDat} ${classGheMinhDaDat} ${classGheKhachDat} ghe text-center`} key={index}
 
           onClick={() => {
-            const action = datGheAction(ghe, id)
+            // const action = datGheAction(ghe, id)
             dispatch(
-              //   {
-              //   type: DAT_VE,
-              //   gheDuocChon: ghe
-              // }
-              action
+                {
+                type: DAT_VE,
+                gheDuocChon: ghe
+              }
+              // action
             )
           }}>
 
@@ -304,6 +306,10 @@ const items = [
 function App() {
   const { tabActive } = useSelector(state => state.QuanLyDatVeReducer);
   const dispatch = useDispatch();
+  const nagivate = useNavigate()
+
+  const {userLogin} = useSelector(state=>state.QuanLyNguoiDungReducer)
+
   useEffect(() => {
     return () => {
       dispatch({
@@ -312,24 +318,46 @@ function App() {
       })
     }
   }, [])
-  return <div>
-    <Tabs defaultActiveKey='1' activeKey={tabActive} items={items} className='' onChange={(key) => {
 
-      dispatch({
-        type: 'CHANGE_TAB_ACTIVE',
-        number: key.toString()
-      })
-    }} />;
-  </div>
+
+
+  const operations = <Fragment>
+    {!_.isEmpty(userLogin) ? 
+    <Fragment> 
+      <button onClick={() => {
+      nagivate('/profile')
+    }}> 
+    <div style={{ width: 50, height: 50, display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="text-2xl ml-5 rounded-full bg-red-200">
+      {userLogin.taiKhoan.substr(0, 1)} 
+    </div>
+    Hello ! {userLogin.taiKhoan}
+    </button>   
+    <button onClick={() => {
+      localStorage.removeItem(USER_LOGIN);
+      localStorage.removeItem(TOKEN);
+      nagivate('/home');
+      window.location.reload();
+    }} className="text-blue-800">Đăng xuất</button> </Fragment> : ''}
+ </Fragment>
+
+    return <div>
+      <Tabs tabBarExtraContent={operations} defaultActiveKey='1' activeKey={tabActive} items={items} className='' onChange={(key) => {
+
+        dispatch({
+          type: 'CHANGE_TAB_ACTIVE',
+          number: key.toString()
+        })
+      }} />;
+    </div>
 }
-export default App;
+    export default App;
 
 
-function KetQuaDatVe() {
+    function KetQuaDatVe() {
   const dispatch = useDispatch();
-  const { userLogin } = useSelector(state => state.QuanLyNguoiDungReducer);
-  const { thongTinNguoiDung } = useSelector(state => state.QuanLyNguoiDungReducer);
-  console.log('thongsTinxcNguoiDung', thongTinNguoiDung);
+    const {userLogin} = useSelector(state => state.QuanLyNguoiDungReducer);
+    const {thongTinNguoiDung} = useSelector(state => state.QuanLyNguoiDungReducer);
+    console.log('thongsTinxcNguoiDung', thongTinNguoiDung);
 
 
 
@@ -340,37 +368,37 @@ function KetQuaDatVe() {
 
 
 
-  const renderTicketItem = function () {
+    const renderTicketItem = function () {
     return thongTinNguoiDung.thongTinDatVe?.map((ticket, index) => {
       const seats = _.first(ticket.danhSachGhe);
 
-      return <div className="p-2 lg:w-1/3 md:w-1/2 w-full" key={index}>
-        <div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-          <img alt="team" className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4" src={ticket.hinhAnh} />
-          <div className="flex-grow">
-            <h2 className="text-pink-500 title-font font-medium text-2xl">{ticket.tenPhim}</h2>
-            <p className="text-gray-500"><span className="font-bold">Giờ chiếu:</span> {moment(ticket.ngayDat).format('hh:mm A')} - <span className="font-bold">Ngày chiếu:</span>  {moment(ticket.ngayDat).format('DD-MM-YYYY')} .</p>
-            <p><span className="font-bold">Địa điểm:</span> {seats.tenHeThongRap}   </p>
-            <p>
-              <span className="font-bold">Tên rạp:</span>  {seats.tenCumRap} - <span className="font-bold">Ghế:</span>  {ticket.danhSachGhe.map((ghe, index) => { return <span className="text-green-500 text-xl" key={index}> [ {ghe.tenGhe} ] </span> })}
-            </p>
-          </div>
+    return <div className="p-2 lg:w-1/3 md:w-1/2 w-full" key={index}>
+      <div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
+        <img alt="team" className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4" src={ticket.hinhAnh} />
+        <div className="flex-grow">
+          <h2 className="text-pink-500 title-font font-medium text-2xl">{ticket.tenPhim}</h2>
+          <p className="text-gray-500"><span className="font-bold">Giờ chiếu:</span> {moment(ticket.ngayDat).format('hh:mm A')} - <span className="font-bold">Ngày chiếu:</span>  {moment(ticket.ngayDat).format('DD-MM-YYYY')} .</p>
+          <p><span className="font-bold">Địa điểm:</span> {seats.tenHeThongRap}   </p>
+          <p>
+            <span className="font-bold">Tên rạp:</span>  {seats.tenCumRap} - <span className="font-bold">Ghế:</span>  {ticket.danhSachGhe.map((ghe, index) => { return <span className="text-green-500 text-xl" key={index}> [ {ghe.tenGhe} ] </span> })}
+          </p>
         </div>
       </div>
+    </div>
     })
   }
 
-  return <div className="p-5">
+    return <div className="p-5">
 
-    <section className="text-gray-600 body-font">
-      <div className="container px-5 py-24 mx-auto">
-        <div className="flex flex-col text-center w-full mb-20">
-          <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4  text-purple-600 ">Lịch sử đặt vé khách hàng</h1>
-          <p className="lg:w-2/3 mx-auto leading-relaxed text-base">Hãy xem thông tin địa và thời gian để xem phim vui vẻ bạn nhé !</p>
-        </div>
-        <div className="flex flex-wrap -m-2">
-          {renderTicketItem()}
-          {/* <div className="p-2 lg:w-1/3 md:w-1/2 w-full">
+      <section className="text-gray-600 body-font">
+        <div className="container px-5 py-24 mx-auto">
+          <div className="flex flex-col text-center w-full mb-20">
+            <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4  text-purple-600 ">Lịch sử đặt vé khách hàng</h1>
+            <p className="lg:w-2/3 mx-auto leading-relaxed text-base">Hãy xem thông tin địa và thời gian để xem phim vui vẻ bạn nhé !</p>
+          </div>
+          <div className="flex flex-wrap -m-2">
+            {renderTicketItem()}
+            {/* <div className="p-2 lg:w-1/3 md:w-1/2 w-full">
             <div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
               <img alt="team" className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4" src="https://picsum.photos/200/200" />
               <div className="flex-grow">
@@ -380,9 +408,9 @@ function KetQuaDatVe() {
             </div>
           </div> */}
 
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-  </div>
+    </div>
 }

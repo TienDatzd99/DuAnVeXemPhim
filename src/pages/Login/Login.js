@@ -19,11 +19,11 @@ export default function Login() {
       dispatch(action);
       console.log("âss",values)
       // Kiểm tra trang trước đó có phải trang đăng ký không
-      // if (location.state?.from === '/register' || location.pathname === '/register') {
-      //   navigate('/'); // Nếu là trang đăng ký thì điều hướng về home
-      // } else {
-      //   navigate(-1); // Nếu không thì quay lại trang trước đó
-      // }
+      if (location.state?.from === '/register' || location.pathname === '/register') {
+        navigate('/'); // Nếu là trang đăng ký thì điều hướng về home
+      } else {
+        navigate(-1); // Nếu không thì quay lại trang trước đó
+      }
     },
   });
 
