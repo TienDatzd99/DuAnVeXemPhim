@@ -15,6 +15,9 @@ layChiTietPhongVe = (maLichChieu) => {
     datVe = (thongTinDatVe ) => { 
         return this.post(`/api/QuanLyDatVe/DatVe`,thongTinDatVe);
     }
+    taoLichChieu = (thongTinLichChieu) =>{
+        return this.post(`/api/QuanLyDatVe/TaoLichChieu`,thongTinLichChieu)
+    }
 }
 
 

@@ -16,12 +16,12 @@ export default function Register() {
   });
   return (
     <div>
-      <form onSubmit={formik.handleSubmit}>
+      <form className='formSign' onSubmit={formik.handleSubmit}>
         <h3>Register</h3>
-        <label htmlFor="username">Username</label>
-        <input type="text" placeholder="Email or Phone" id="username" name='taiKhoan' onChange={formik.handleChange} />
-        <label htmlFor="password">Password</label>
-        <input type="password" placeholder="Password" id="password" name='matKhau' onChange={formik.handleChange}/>
+        <label className='labelSign' htmlFor="username">Username</label>
+        <input className='inputSign' type="text" placeholder="Email or Phone" id="username" name='taiKhoan' onChange={formik.handleChange} />
+        <label className='labelSign' htmlFor="password">Password</label>
+        <input className='inputSign' type="password" placeholder="Password" id="password" name='matKhau' onChange={formik.handleChange}/>
         <div  className='flex justify-end p-2 '>
             <NavLink to={'/login'} className='text-blue-500'> Login</NavLink>
            

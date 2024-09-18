@@ -28,10 +28,10 @@ export default function Login() {
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form className='formSign' onSubmit={formik.handleSubmit}>
       <h3>Login Here</h3>
-      <label htmlFor="username">Username</label>
-      <input
+      <label className='labelSign' htmlFor="username">Username</label>
+      <input className='inputSign'
         type="text"
         placeholder="Input Account"
         id="username"
@@ -39,8 +39,8 @@ export default function Login() {
         onChange={formik.handleChange}
         value={formik.values.taiKhoan}
       />
-      <label htmlFor="password">Password</label>
-      <input
+      <label className='labelSign' htmlFor="password">Password</label>
+      <input className='inputSign'
         type="password"
         placeholder="Password"
         id="password"
