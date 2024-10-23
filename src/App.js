@@ -16,6 +16,7 @@ import Dashboard from './pages/Admin/Dashboard/Dashboard';
 import ShowTime from './pages/Admin/Showtime/ShowTime';
 import AddNew from './pages/Admin/Films/AddNew/AddNew';
 import Edit from './pages/Admin/Films/Edit/Edit';
+import Profile from './pages/Profile/Profile';
 
 // Lazy load for CheckoutTemplate
 const CheckoutTemplateLazy = lazy(() => import('./templates/CheckoutTemplate/CheckoutTemplate'));
@@ -32,7 +33,7 @@ function App() {
         <Route path='/news' element={<HomeTemplate Component={News} />} />
         <Route path='/login' element={<UserTemplate Component={Login} />} />
         <Route path='/register' element={<UserTemplate Component={Register} />} />
-        <Route path='/profile' element={<UserTemplate Component={Register} />} />
+        <Route path='/profile' element={<HomeTemplate Component={Profile} />} />
         <Route path='/admin' element={<AdminTemplate Component={Dashboard} />} />
         <Route path='/admin/Films' element={<AdminTemplate Component={Films} />} />
         <Route path='/admin/Films/edit/:id' element={<AdminTemplate Component={Edit} />} />
