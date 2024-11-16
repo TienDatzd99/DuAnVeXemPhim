@@ -6,7 +6,7 @@ export class QuanLyRapService  extends baseService{
         super();
     }
     layDanhSachRap = () => {
-        return this.get(`/api/QuanLyRap/LayThongTinLichChieuHeThongRap?maNhom=${GROUPID}`);
+        return this.get(`/api/QuanLyRap/LayThongTinLichChieuHeThongRap`);
     }
     layThongTinLichChieuPhim = (maPhim) =>{
         return this.get(`/api/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=${maPhim}`)

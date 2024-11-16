@@ -14,6 +14,11 @@ export class QuanLyNguoiDungService extends baseService {
     LayThongTinNguoiDung = () => {
         return this.post('/api/QuanLyNguoiDung/ThongTinTaiKhoan');
     }
+
+
+
+
+
 }
 
 

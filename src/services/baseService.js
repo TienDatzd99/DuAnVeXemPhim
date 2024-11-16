@@ -1,5 +1,5 @@
 import Axios from "axios"
-import {DOMAIN,TOKEN} from '../util/settings/config'
+import {ApiTest, DOMAIN,TOKEN} from '../util/settings/config'
 
 export class baseService {
     //put json về phía backend
@@ -20,7 +20,13 @@ export class baseService {
             headers: {'Authorization': 'Bearer ' + localStorage.getItem(TOKEN)} //JWT
         }) 
     }
-
+    gettest = (url) => {
+        return Axios({
+            url:`${ApiTest}${url}`,
+            method:'GET',
+        
+        })
+    }
 
     get = (url) => {
         return Axios({

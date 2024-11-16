@@ -7,7 +7,7 @@ export const layDanhSachHeThongRapAction = () => {
     return async dispatch => {
         try {
             const result = await quanLyRapService.layDanhSachRap()
-            console.log("sssa",result)
+            console.log("ass",result)
             if(result.status === 200){
                 dispatch({
                     type: SET_HE_THONG_RAP_CHIEU,

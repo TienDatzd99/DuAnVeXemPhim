@@ -6,6 +6,9 @@ import Film from '../Film/Film'
 import Film_Flip from "../Film/Film_Flip";
 import { type } from '@testing-library/user-event/dist/type';
 import { SET_FILM_DANG_CHIEU, SET_FILM_SAP_CHIEU } from '../../redux/actions/types/QuanLyPhimType';
+
+
+
 function SampleNextArrow(props) {
   const { className, style, onClick } = props;
 

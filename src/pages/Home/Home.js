@@ -7,6 +7,7 @@ import MultipleRowSlick from '../../components/RSlick/MultipleRowSlick'
 import { layDanhSachPhimAction } from '../../redux/actions/QuanLyPhimAction'
 import { layDanhSachHeThongRapAction } from '../../redux/actions/QuanLyRapAction'
 import HomeCarousel from '../../templates/HomeTemplate/Layout/HomeCarousel/HomeCarousel'
+import { layThongTinNguoiDungAction } from '../../redux/actions/QuanLyNguoiDungAction'
 export default function Home() {
   const dispatch = useDispatch()
 
@@ -14,22 +15,15 @@ export default function Home() {
     const action = layDanhSachPhimAction();
     dispatch(action)
     dispatch(layDanhSachHeThongRapAction())
+    dispatch(layThongTinNguoiDungAction())
   }, [])
+
   const { heThongRapChieu } = useSelector(state => state.QuanLyRapReducer)
   const { arrFilm } = useSelector(state => state.QuanLyPhimReducer)
   console.log(heThongRapChieu)
 
 
-  
-  // const renderFilms = () => {
-  //   return arrFilm.map((phim, index) => {
-  //     return <div key={index} className="p-4 lg:w-1/3">
-  //       <Film/>
-  //     </div>
 
-
-  //   })
-  // }
   return (
     <div>
       <HomeCarousel />
