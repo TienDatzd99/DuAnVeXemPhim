@@ -1,126 +1,223 @@
-import React, { useState, useEffect } from 'react'
-import './Detail.css'
-import { useDispatch, useSelector } from 'react-redux'
-import './circle.css'
-import { Radio, Rate, Space, Tabs } from 'antd';
-import { NavLink, useParams } from 'react-router-dom';
-import { SET_CHI_TIET_PHIM } from '../../redux/actions/types/QuanLyRapType';
+import React, { useCallback, useEffect, useState } from 'react';
+import './Detail.css';
+import { useDispatch, useSelector } from 'react-redux';
+import './circle.css';
+import { Button, message, Rate, Tabs } from 'antd';
+import { NavLink, useParams, useNavigate } from 'react-router-dom';
 import { layThongTinChiTietPhimAction } from '../../redux/actions/QuanLyRapAction';
 import moment from 'moment';
-import TabPane from 'antd/es/tabs/TabPane';
+import TextArea from 'antd/es/input/TextArea';
+import { layDanhGiaAction, themDanhGiaAction } from '../../redux/actions/QuanLyPhimAction';
+
+const { TabPane } = Tabs;
+
 export default function Detail() {
-    const { userLogin } = useSelector(state => state.QuanLyNguoiDungReducer);
-    const { id } = useParams()
-    console.log("Movie ID:", id);
-    const FilmDetail = useSelector(state => state.QuanLyPhimReducer)
-    const filmDetail = FilmDetail.FilmDetail
-    console.log("das", { FilmDetail })
-    const kiemTraDangNhap = (lichChieu) => {
-        return userLogin.accessToken
-            ? `/checkout/${lichChieu.maLichChieu}`
-            : `/login`;
+
+  const { danhGiaFilm } = useSelector(state => state.QuanLyPhimReducer);
+  console.log('danhGiaFilm', danhGiaFilm);
+
+  const { id } = useParams();
+
+  const [review, setReview] = useState('');
+  const [rating, setRating] = useState(0);
+  const [isReviewUpdated, setIsReviewUpdated] = useState(false);
+  const handleReviewChange = (e) => {
+    setReview(e.target.value);
+  };
+
+  const handleRatingChange = (value) => {
+    setRating(value);
+  };
+
+  const handleSubmitReview = () => {
+    if (review.trim() === '' || rating === 0) {
+      message.error('Vui lòng nhập đánh giá và chọn số sao.');
+      return;
+    }
+
+    // Tạo đối tượng đánh giá
+    const danhGia = {
+      soSao: rating,
+      binhLuan: review,
     };
-    const dispatch = useDispatch()
-    useEffect(() => {
+    console.log('danhGia', danhGia);
 
-        dispatch(layThongTinChiTietPhimAction(id))
-    }, [])
+    // Dispatch action gửi đánh giá
+    dispatch(themDanhGiaAction(id, danhGia));
 
-    return (
-        <div style={{ backgroundImage: `url(${FilmDetail.FilmDetail.hinhAnh})`, backgroundSize: "100%", backgroundPosition: 'center' }}>
-            <div className="upper-layer w-full flex-wrap flex-col transparent-black-background">
+    dispatch(layDanhGiaAction(id));
+    message.success('Cảm ơn bạn đã đánh giá!');
+    setReview('');
+    setRating(0);
+    setIsReviewUpdated(!isReviewUpdated);
+  };
 
-                <div className="grid grid-cols-12">
-                    <div className="col-span-5 col-start-3">
-                        <div className="grid grid-cols-3 text-white">
-                            <img className="col-span-1" src={filmDetail.hinhAnh} style={{ width: '100%', height: 300 }} alt="123" />
-                            <div className="col-span-2 ml-5" style={{ marginTop: '20%' }}>
-                                <p className="text-sm">Ngày chiếu: {moment(filmDetail.ngayKhoiChieu).format('DD.MM.YYYY')}</p>
-                                <p className="text-4xl leading-3 my-5">{filmDetail.tenPhim}</p>
-                                <p>{filmDetail.moTa}</p>
-                            </div>
-                        </div>
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-                    </div>
+  const { userLogin } = useSelector(state => state.QuanLyNguoiDungReducer);
 
-                    <div className="col-span-4 ml-10">
-                        <h1 style={{ marginLeft: '15%', color: 'yellow', fontWeight: 'bold', fontSize: 15 }}>Đánh giá</h1>
-                        <h1 style={{ marginLeft: '5%' }} className="text-green-400 text-2xl"><Rate allowHalf value={filmDetail.danhGia / 2} style={{ color: '#78ed78', fontSize: 30 }} /></h1>
-                        <div className={`c100 p${filmDetail.danhGia * 10} big`}>
-                            <span className="text-white">
+  const FilmDetail = useSelector(state => state.QuanLyPhimReducer.FilmDetail);
 
-                                {filmDetail.danhGia * 10}%
-                            </span>
-                            <div className="slice">
-                                <div className="bar"></div>
-                                <div className="fill"></div>
+  useEffect(() => {
+    dispatch(layDanhGiaAction(id));
+    dispatch(layThongTinChiTietPhimAction(id));
+  }, [dispatch, id, isReviewUpdated]);
 
-                            </div>
+  // Sử dụng useCallback để ghi nhớ hàm và tránh tạo lại mỗi lần render
+  const kiemTraDangNhap = useCallback(
+    (lichChieu) => {
+      if (userLogin && userLogin.accessToken) {
+        return `/checkout/${lichChieu.maLichChieu}`;
+      } else {
+        return `/login`;
+      }
+    },
+    [userLogin]
+  );
 
-                        </div>
-                        <br />
-
-                    </div>
-                </div>
-
-
-
-                <div className="mt-10  w-2/3 container bg-white px-5 py-5 flex justify-center" >
-                    <Tabs defaultActiveKey="1" centered 
-                    //style={{ minWidth: 900, backgroundColor: "white", marginTop: 50 }} 
-                    >
-                        <TabPane tab="Lịch chiếu" key="1" 
-                       // style={{ minHeight: 760, backgroundColor: "white" }}
-                        >
-                            <div >
-                                <Tabs tabPosition={'left'} >
-                                    {FilmDetail.FilmDetail.heThongRapChieu?.map((htr, index) => {
-                                        return <TabPane
-                                            tab={<div className="flex flex-row items-center justify-center ">
-                                                <img src={htr.logo} className="rounded-full w-full" style={{ width: 50 }} alt="..." />
-                                                <div className="text-center ml-2">
-                                                    {htr.tenHeThongRap}
-                                                </div>
-                                            </div>}
-                                            key={index}>
-                                            {htr.cumRapChieu?.map((cumRap, index) => {
-                                                return <div className="mt-5" key={index}>
-                                                    <div className="flex flex-row">
-                                                        <img style={{ width: 60, height: 60 }} src={cumRap.hinhAnh} alt="..." />
-                                                        <div className="ml-2">
-                                                            <p style={{ fontSize: 20, fontWeight: 'bold', lineHeight: 1, }} >{cumRap.tenCumRap}</p>
-                                                            <p className="text-gray-400" style={{ marginTop: 0 }}>{cumRap.diaChi}</p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="thong-tin-lich-chieu grid grid-cols-4">
-                                                        {cumRap.lichChieuPhim?.slice(0, 12).map((lichChieu, index) => {
-                                                            return <NavLink to={kiemTraDangNhap(lichChieu)} key={index} className="col-span-1 text-green-800 font-bold">
-                                                                {moment(lichChieu.ngayChieuGioChieu).format('hh:mm A')}
-                                                            </NavLink>
-                                                        })}
-                                                    </div>
-                                                </div>
-                                            })}
-
-
-
-                                        </TabPane>
-                                    })}
-
-
-                                </Tabs>
-                            </div>
-                        </TabPane>
-                        <TabPane tab="Thông tin" key="2" style={{ minHeight: 300 }}>
-                            Thông tin
-                        </TabPane>
-                        <TabPane tab="Đánh giá" key="3" style={{ minHeight: 300 }}>
-                            Đánh giá
-                        </TabPane>
-                    </Tabs>
-                </div>
+  return (
+    <div className="flex flex-col min-h-screen "
+    style={{
+      backgroundImage: `url(${FilmDetail?.hinhAnh})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }}
+    >
+      <div className="upper-layer w-full flex-wrap flex-col transparent-black-background h-screen">
+        {/* Thông tin phim */}
+        <div className="grid grid-cols-12 gap-4">
+          <div className="col-span-12 md:col-span-5 md:col-start-4 lg:col-span-5 lg:col-start-3">
+            <div className="grid grid-cols-3 text-white">
+              <img
+                className="col-span-1 object-cover rounded"
+                src={FilmDetail?.hinhAnh}
+                alt={FilmDetail?.tenPhim}
+                style={{ width: '100%', height: 300 }}
+              />
+              <div className="col-span-2 ml-5 mt-4 md:mt-0">
+                <p className="text-sm">Ngày chiếu: {moment(FilmDetail?.ngayKhoiChieu).format('DD.MM.YYYY')}</p>
+                <h2 className="text-2xl leading-6 my-1">{FilmDetail?.tenPhim}</h2>
+                <p>{FilmDetail?.moTa}</p>
+              </div>
             </div>
+          </div>
 
+          {/* Đánh giá */}
+          <div className="col-span-12 md:col-span-4 lg:col-span-4 ml-0 md:ml-10">
+            <div className='flex flex-col justify-center items-center'>
+              <h3 className="text-yellow-500 font-bold text-lg mb-2">Đánh giá</h3>
+              <Rate
+                allowHalf
+                value={FilmDetail?.danhGia / 2}
+                style={{ color: '#78ed78', fontSize: 30 }}
+              />
+              <div className={`c100 p${FilmDetail?.danhGia * 10} big`}>
+                <span className="text-white pl-5">
+                  {(FilmDetail?.danhGia * 10).toFixed(2)}%
+                </span>
+                <div className="slice">
+                  <div className="bar"></div>
+                  <div className="fill"></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-    );
+
+        {/* Tabs Lịch chiếu và Đánh giá */}
+        <div className="mt-10 w-full max-w-5xl mx-auto bg-white px-5 py-5 flex-grow mb-2 rounded-md	">
+          <Tabs defaultActiveKey="1" centered >
+            {/* Tab Lịch chiếu */}
+            <TabPane tab="Lịch chiếu" key="1">
+              <Tabs tabPosition="left">
+                {FilmDetail?.heThongRapChieu?.map((htr) => (
+                  <TabPane
+                    tab={
+                      <div className="flex items-center">
+                        <img
+                          src={htr.logo}
+                          className="rounded-full"
+                          style={{ width: 50, height: 50 }}
+                          alt={htr.tenHeThongRap}
+                        />
+                        <span className="ml-2">{htr.tenHeThongRap}</span>
+                      </div>
+                    }
+                    key={htr.maHeThongRap}
+                  >
+                    {htr.cumRapChieu?.map((cumRap) => (
+                      <div className="mt-5" key={cumRap.maCumRap}>
+                        <div className="flex items-center">
+                          <img
+                            src={cumRap.hinhAnh}
+                            alt={cumRap.tenCumRap}
+                            style={{ width: 60, height: 60 }}
+                            className="object-cover rounded"
+                          />
+                          <div className="ml-2">
+                            <p className="text-lg font-bold">{cumRap.tenCumRap}</p>
+                            <p className="text-gray-400">{cumRap.diaChi}</p>
+                          </div>
+                        </div>
+                        <div className="thong-tin-lich-chieu grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mt-2">
+                          {cumRap.lichChieuPhim?.slice(0, 12).map((lichChieu) => (
+                            <NavLink
+                              to={kiemTraDangNhap(lichChieu)}
+                              key={lichChieu.maLichChieu}
+                              className="block text-green-800 font-bold text-center border border-green-800 rounded p-2 hover:bg-green-800 hover:text-white transition"
+                            >
+                              {moment(lichChieu.ngayChieuGioChieu).format('hh:mm A')}
+                            </NavLink>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </TabPane>
+                ))}
+              </Tabs>
+            </TabPane>
+
+            {/* Tab Đánh giá */}
+            <TabPane tab="Đánh giá" key="3" style={{ minHeight: 300 }}>
+              <div className="p-4">
+                {danhGiaFilm?.length > 0 ? (
+                  <div className="comment-section">
+                    {danhGiaFilm.map((danhGia, index) => (
+                      <div key={index} className="mb-4">
+                        <Rate disabled value={danhGia.soSao} />
+                        <p>{danhGia.nguoiBinhLuan || "Ẩn Danh"}</p>
+                        <p>{danhGia.binhLuan}</p>
+                        <p>{moment(danhGia.ngayBinhLuan).format('DD.MM.YYYY HH:mm')}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>Chưa có đánh giá nào cho phim này.</p>
+                )}
+              </div>
+
+              <div className="p-4">
+                <h3 className="text-xl font-semibold mb-4">Đánh giá phim</h3>
+                <div className="mb-4">
+                  <Rate onChange={handleRatingChange} value={rating} />
+                </div>
+                <div className="mb-4">
+                  <TextArea
+                    rows={4}
+                    placeholder="Nhập đánh giá của bạn..."
+                    value={review}
+                    onChange={handleReviewChange}
+                  />
+                </div>
+                <Button type="primary" onClick={handleSubmitReview}>
+                  Gửi Đánh Giá
+                </Button>
+              </div>
+            </TabPane>
+          </Tabs>
+        </div>
+      </div>
+    </div>
+  );
 }

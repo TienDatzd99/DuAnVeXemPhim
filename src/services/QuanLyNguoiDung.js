@@ -6,13 +6,16 @@ export class QuanLyNguoiDungService extends baseService {
     }
 
     DangNhap = (thongTinDangNhap) => {
-        return this.post(`/api/QuanLyNguoiDung/DangNhap`, thongTinDangNhap)
+        return this.postTest(`/api/QuanLyNguoiDung/DangNhap`, thongTinDangNhap)
 
 
     }
 
     LayThongTinNguoiDung = () => {
-        return this.post('/api/QuanLyNguoiDung/ThongTinTaiKhoan');
+        return this.gettest('/api/QuanLyNguoiDung/ThongTinTaiKhoan');
+    }
+    DangKy = (thongTinDangKy) => {
+        return this.postTest('/api/QuanLyNguoiDung/DangKy', thongTinDangKy);
     }
 
 

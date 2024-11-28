@@ -1,13 +1,14 @@
 .upper-layer {
-  display: flex;
+
   grid-template-columns: repeat(2, minmax(0, 1fr));
   position: relative;
 /* Setting the size of the upper layer to 80% of the screen size*/
 
-height:100%;
+
   align-items: center;
   justify-content: space-between;
-  padding: 50px;
+  padding-bottom: 0;
+ 
   padding-right: 100px;
   padding-left: 100px;
 padding-top : 200px;
@@ -28,4 +29,9 @@ box-shadow: 0 8px 32px 0 rgba( 0, 0, 0, 0.18 );
 }
 .transparent-black-background {
   background-color: rgba(0, 0, 0, 0.3); /* 0.5 là độ trong suốt từ 0 (hoàn toàn trong suốt) đến 1 (không trong suốt) */
+}
+.comment-section {
+  max-height: 400px; /* Đặt chiều cao tối đa */
+  overflow-y: auto; /* Hiển thị thanh cuộn dọc nếu nội dung vượt quá chiều cao */
+  padding-right: 10px; /* Đảm bảo khoảng trống cho thanh cuộn */
 }

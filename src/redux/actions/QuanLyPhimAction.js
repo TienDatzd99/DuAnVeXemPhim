@@ -2,7 +2,7 @@
 import { result } from 'lodash';
 import { quanLyPhimService } from '../../services/QuanLyPhimService';
 import { history } from '../../util/settings/history';
-import { SET_DANH_SACH_PHIM, SET_THONG_TIN_PHIM } from './types/QuanLyPhimType';
+import { SET_DANH_GIA, SET_DANH_SACH_PHIM, SET_THONG_TIN_PHIM } from './types/QuanLyPhimType';
 
 export const layDanhSachPhimAction = (tenPhim='') => {
 
@@ -79,5 +79,34 @@ export const xoaPhimAction = (maPhim)=>{
         } catch (error) {
             console.log('error',error)
         }
+    }
+}
+export const themDanhGiaAction = (maPhim, danhGia) => {
+    console.log('maPhim', maPhim);
+    console.log('danhGia', danhGia);
+    return async (dispatch) => {
+        try {
+            let result = await quanLyPhimService.themDanhGia(maPhim, danhGia);
+            console.log('result', result.data.content);
+            layDanhGiaAction(maPhim);
+          
+        } catch (errors) {
+            console.log('errors', errors)
+        }
+    }
+}
+export const layDanhGiaAction = (maPhim) => {
+    return async (dispatch) => {
+        try {
+            let result = await quanLyPhimService.layDanhGiaPhim(maPhim);
+            console.log('resulsstsad', result);
+            dispatch({
+                type: SET_DANH_GIA,
+                arrComment: result.data
+            })
+            console.log('result', result.data);
+        } catch (errors) {
+            console.log('errors', errors)
+        }   
     }
 }

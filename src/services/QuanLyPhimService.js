@@ -12,23 +12,29 @@ export class QuanLyPhimService  extends baseService{
     
     layDanhSachPhim = (tenPhim='') => {
         if(tenPhim.trim()!==''){
-            return this.get(`/api/QuanLyPhim/LayDanhSachPhim?maNhom=${GROUPID}&tenPhim=${tenPhim}`)
+            return this.gettest(`/api/QuanLyPhim/LayDanhSachPhim?maNhom=${GROUPID}&tenPhim=${tenPhim}`)
         }
-        return this.get(`/api/QuanLyPhim/LayDanhSachPhim?maNhom=${GROUPID}`)
+        return this.gettest(`/api/QuanLyPhim/LayDanhSachPhim?maNhom=${GROUPID}`)
 
     }
     themPhimUploadHinh = (Formdata) => {
-        return this.post(`/api/QuanLyPhim/ThemPhimUploadHinh`,Formdata);
+        return this.postTest(`/api/QuanLyPhim/ThemPhimUploadHinh`,Formdata);
     }
 
     layThongTinPhim = (MaPhim)  =>{
-        return this.get(`/api/QuanLyPhim/LayThongTinPhim?MaPhim=${MaPhim}`);
+        return this.gettest(`/api/QuanLyPhim/LayThongTinPhim?MaPhim=${MaPhim}`);
     }
     capNhatPhimUpLoad = (formData)=>{
-        return this.post(`/api/QuanLyPhim/CapNhatPhimUpload`,formData)
+        return this.postTest(`/api/QuanLyPhim/CapNhatPhimUpload`,formData)
     }
     xoaPhim = (MaPhim)=>{
-        return this.delete(`/api/QuanLyPhim/XoaPhim?MaPhim=${MaPhim}`)
+        return this.deleteTest(`/api/QuanLyPhim/XoaPhim?MaPhim=${MaPhim}`)
+    }
+    themDanhGia = (maPhim,formData)=>{ 
+        return this.postTest(`/api/QuanLyPhim/ThemDanhGia?maPhim=${maPhim}`,formData)
+    }
+    layDanhGiaPhim = (maPhim)=>{
+        return this.gettest(`/api/QuanLyPhim/LayDanhGiaPhim?maPhim=${maPhim}`)
     }
 
  

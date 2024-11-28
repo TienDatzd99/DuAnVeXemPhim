@@ -10,13 +10,16 @@ import HomeCarousel from '../../templates/HomeTemplate/Layout/HomeCarousel/HomeC
 import { layThongTinNguoiDungAction } from '../../redux/actions/QuanLyNguoiDungAction'
 export default function Home() {
   const dispatch = useDispatch()
+  const { userLogin, thongTinNguoiDung } = useSelector(state => state.QuanLyNguoiDungReducer);
 
   useEffect(() => {
     const action = layDanhSachPhimAction();
     dispatch(action)
     dispatch(layDanhSachHeThongRapAction())
-    dispatch(layThongTinNguoiDungAction())
-  }, [])
+    if (userLogin && userLogin.accessToken) {
+      dispatch(layThongTinNguoiDungAction());
+    }
+  }, [dispatch, userLogin]);
 
   const { heThongRapChieu } = useSelector(state => state.QuanLyRapReducer)
   const { arrFilm } = useSelector(state => state.QuanLyPhimReducer)
@@ -38,7 +41,7 @@ export default function Home() {
           </div>
         </section>
 
-        <HomeMenu rapChieu={heThongRapChieu} />
+        {/* <HomeMenu rapChieu={heThongRapChieu} /> */}
       </div>
     </div>
   )

@@ -173,7 +173,7 @@ const Edit = () => {
                     <img width={100} height={100} src={imgSrc === '' ? thongTinPhim.hinhAnh : imgSrc} alt='1' />
                 </Form.Item>
                 <Form.Item >
-                    <button type="submit" className="bg-blue-300 text-white p-2">Cập nhật</button>
+                    <button type="submit" className="bg-blue-500 text-white p-2">Cập nhật</button>
 
                 </Form.Item>
             </Form>

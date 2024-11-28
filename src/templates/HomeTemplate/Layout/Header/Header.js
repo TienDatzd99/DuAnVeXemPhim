@@ -4,7 +4,6 @@ import { Select } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 
-
 //Hook đa ngôn ngữ
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -21,6 +20,7 @@ export default function Header() {
 
   const { userLogin } = useSelector(state => state.QuanLyNguoiDungReducer);
 
+  console.log('userLogin', userLogin);
   const { t, i18n } = useTranslation();
 
 
@@ -43,7 +43,7 @@ export default function Header() {
     }
     return <Fragment> <button onClick={() => {
       nagivate('/profile')
-    }} className="self-center px-8 py-3 rounded">Hello ! {userLogin.taiKhoan}</button>
+    }} className="self-center px-8 py-3 rounded">Hello ! {userLogin.hoTen}</button>
       <button onClick={() => {
         localStorage.removeItem(USER_LOGIN);
         localStorage.removeItem(TOKEN);
@@ -59,7 +59,12 @@ export default function Header() {
     <header className="p-4 bg-coolGray-100 text-coolGray-800 bg-opacity-40 bg-black text-white fixed w-full z-10" >
         <div className="container flex justify-between h-16 mx-auto">
             <NavLink to="/" aria-label="Back to homepage" className="flex items-center p-2">
-                logo
+            <img
+               src="/logoPhim.png"
+          alt="logo"
+          className="h-32"
+
+        />
             </NavLink>
             <ul className="items-stretch hidden space-x-3 lg:flex">
                 <li className="flex">
