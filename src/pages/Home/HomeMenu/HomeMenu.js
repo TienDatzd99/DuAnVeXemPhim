@@ -16,6 +16,7 @@ export default function HomeMenu(props) {
   const changeTabPosition = (e) => {
     setTabPosition(e.target.value);
   };
+  console.log('props.rapChieu', props.rapChieu);
 
   // Kiểm tra trạng thái đăng nhập và trả về URL phù hợp
   const kiemTraDangNhap = (lichChieu) => {
@@ -27,12 +28,14 @@ export default function HomeMenu(props) {
   // Render danh sách các hệ thống rạp chiếu
   const renderHeThongRap = () => {
     return props.rapChieu?.slice(0, 8).map((heThongRap, index) => (
+      console.log('heThongRap', heThongRap),
       <TabPane
         tab={<img src={heThongRap.logo} className='rounded-full' width="50" alt={`Logo ${index}`} />}
         key={index}
       >
         <Tabs tabPosition={tabPosition}>
           {heThongRap.lstCumRap?.map((cumRap, index) => (
+            console.log('cumRap', cumRap),
             <TabPane
               tabPosition={tabPosition}
               tab={
@@ -46,7 +49,8 @@ export default function HomeMenu(props) {
               }
               key={index}
             >
-              {cumRap.danhSachPhim?.slice(95, 101).map((phim, index) => (
+              {cumRap.danhSachPhim?.slice(0, 10).map((phim, index) => (
+                console.log('phiss', cumRap.danhSachPhim),
                 <Fragment key={index}>
                   <div className='my-5'>
                     <div className='flex flex-row'>

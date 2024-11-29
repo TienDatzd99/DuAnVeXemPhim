@@ -41,7 +41,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* <HomeMenu rapChieu={heThongRapChieu} /> */}
+        <HomeMenu rapChieu={heThongRapChieu} />
       </div>
     </div>
   )

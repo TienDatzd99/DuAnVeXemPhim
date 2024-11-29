@@ -49,73 +49,69 @@ function Checkout() {
   const { thongTinPhim, danhSachGhe } = chiTietPhongVe
 
   const renderSeats = () => {
-    return danhSachGhe.map((ghe, index) => {
-      let classGheVip = ghe.loaiGhe === 'Vip' ? 'gheVip' : '';
-      let classGheDaDat = ghe.daDat === true ? 'gheDaDat ' : '';
-      let classGheDangDat = ''
-      let classGheKhachDat = ''
-      let indexGheKD = danhSachGheKhachDat.findIndex(GheKD => GheKD.maGhe === ghe.maGhe)
-      if (indexGheKD !== -1) {
-        classGheKhachDat = 'gheKhachDat'
-      }
-      let indexGheDD = danhSachGheDangDat.findIndex(GheDD => GheDD.maGhe === ghe.maGhe)
-      if (indexGheDD !== -1) {
-        classGheDangDat = 'gheDangDat'
-      }
+    return (
+      <div className="flex justify-center flex-wrap">
+        {danhSachGhe.map((ghe, index) => {
+          let classGheVip = ghe.loaiGhe === 'Vip' ? 'gheVip' : '';
+          let classGheDaDat = ghe.daDat === true ? 'gheDaDat ' : '';
+          let classGheDangDat = '';
+          let classGheKhachDat = '';
+          let indexGheKD = danhSachGheKhachDat.findIndex(GheKD => GheKD.maGhe === ghe.maGhe);
+          if (indexGheKD !== -1) {
+            classGheKhachDat = 'gheKhachDat';
+          }
+          let indexGheDD = danhSachGheDangDat.findIndex(GheDD => GheDD.maGhe === ghe.maGhe);
+          if (indexGheDD !== -1) {
+            classGheDangDat = 'gheDangDat';
+          }
 
-      let classGheMinhDaDat = '';
-      if (userLogin.taiKhoan === ghe.taiKhoanNguoiDat) {
-        classGheMinhDaDat = 'gheDaDuocDat'
-      }
+          let classGheMinhDaDat = '';
+          if (userLogin.taiKhoan === ghe.taiKhoanNguoiDat) {
+            classGheMinhDaDat = 'gheDaDuocDat';
+          }
 
-      return <Fragment key={index}>
-
-
-        <button disabled={ghe.daDat || classGheMinhDaDat !== ''} className={`${classGheVip} ${classGheDangDat} ${classGheDaDat} ${classGheMinhDaDat} ${classGheKhachDat} ghe md:m-2 lg:m-3 xl:m-4 w-1/12  text-center`} key={index}
-
-          onClick={() => {
-            // const action = datGheAction(ghe, id)
-            dispatch(
-              {
-                type: DAT_VE,
-                gheDuocChon: ghe
-              }
-              // action
-            )
-          }}>
-
-
-
-
-          {ghe.daDat ? classGheMinhDaDat !== '' ?
-            <UserOutlined /> :
-            <CloseOutlined style={{ marginBottom: 7.5, fontWeight: 'bold' }} />
-            : classGheKhachDat !== '' ? <SmileOutlined /> : ghe.stt}
-
-
-        </button>
-
-
-
-
-
-        {(index + 1) % 16 === 0 ? <br /> : ''}
-
-
-      </Fragment>
-    })
-  }
+          return (
+            <Fragment key={index}>
+              <button
+                disabled={ghe.daDat || classGheMinhDaDat !== ''}
+                className={`${classGheVip} ${classGheDangDat} ${classGheDaDat} ${classGheMinhDaDat} ${classGheKhachDat} ghe md:m-2 lg:m-3 xl:m-4 text-center`}
+                onClick={() => {
+                  dispatch({
+                    type: DAT_VE,
+                    gheDuocChon: ghe,
+                  });
+                }}
+              >
+                {ghe.daDat ? (
+                  classGheMinhDaDat !== '' ? (
+                    <UserOutlined />
+                  ) : (
+                    <CloseOutlined style={{ marginBottom: 7.5, fontWeight: 'bold' }} />
+                  )
+                ) : classGheKhachDat !== '' ? (
+                  <SmileOutlined />
+                ) : (
+                  ghe.stt
+                )}
+              </button>
+            </Fragment>
+          );
+        })}
+      </div>
+    );
+  };
 
 
   return (
     <div className="min-h-screen p-5" style={{ padding: '20px' }}>
       <div className='grid grid-cols-12'>
-        <div className='col-span-9  ' style={{ marginLeft: "5%", paddingLeft: "10%", paddingRight: "7%", }}>
+        <div className='col-span-9  ' style={{ marginLeft: "10%", paddingLeft: "5%", paddingRight: "2%", }}>
 
           <div className='manHinh mt-20'>
             <img className='w-full' st src='https://movie-booking-project.vercel.app/img/bookticket/screen.png' style={{ height: "70px" }} />
           </div>
-          <div className='transparent-checkout-black-background flex flex-wrap '>
+          
+          <div className='transparent-checkout-black-background '>
             {renderSeats()}
           </div>
           <div className="mt-5 flex justify-center">
@@ -257,7 +253,7 @@ function App() {
   const nagivate = useNavigate()
 
   const { userLogin } = useSelector(state => state.QuanLyNguoiDungReducer)
-
+  console.log('userLogin', userLogin);
   useEffect(() => {
     return () => {
       dispatch({
@@ -272,13 +268,13 @@ function App() {
   const operations = <Fragment>
     {!_.isEmpty(userLogin) ?
       <Fragment>
-        <button onClick={() => {
+        <button className='mr-2' onClick={() => {
           nagivate('/profile')
         }}>
           {/* <div style={{ width: 50, height: 50, display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="text-2xl ml-5 rounded-full bg-red-200">
       {userLogin.taiKhoan.substr(0, 1)} 
     </div> */}
-          Hello ! {userLogin.taiKhoan}
+          Hello ! {userLogin.hoTen}
         </button>
         <button onClick={() => {
           localStorage.removeItem(USER_LOGIN);

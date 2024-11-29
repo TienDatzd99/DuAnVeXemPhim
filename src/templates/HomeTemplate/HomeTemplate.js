@@ -8,11 +8,12 @@ export default function HomeTemplate({Component}) {
     window.scrollTo(0,0)
   })
   return (
-   <>
-   <Header/>
-  
-   <Component/>
-   <Footer/>
-   </>
+    <div className="flex flex-col min-h-screen">
+    <Header />
+    <main className="flex-grow">
+      <Component />
+    </main>
+    <Footer />
+  </div>
   )
 }

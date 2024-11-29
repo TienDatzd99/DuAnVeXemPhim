@@ -77,23 +77,16 @@ export default function Detail() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen "
-    style={{
-      backgroundImage: `url(${FilmDetail?.hinhAnh})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-    }}
-    >
-      <div className="upper-layer w-full flex-wrap flex-col transparent-black-background h-screen">
+    <div className="flex flex-col min-h-screen">
+      <div className="upper-layer w-full flex-grow flex flex-col transparent-black-background">
         {/* Thông tin phim */}
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-12 md:col-span-5 md:col-start-4 lg:col-span-5 lg:col-start-3">
             <div className="grid grid-cols-3 text-white">
               <img
-                className="col-span-1 object-cover rounded"
+                className="col-span-1 object-cover rounded w-full h-72"
                 src={FilmDetail?.hinhAnh}
                 alt={FilmDetail?.tenPhim}
-                style={{ width: '100%', height: 300 }}
               />
               <div className="col-span-2 ml-5 mt-4 md:mt-0">
                 <p className="text-sm">Ngày chiếu: {moment(FilmDetail?.ngayKhoiChieu).format('DD.MM.YYYY')}</p>
@@ -126,19 +119,18 @@ export default function Detail() {
         </div>
 
         {/* Tabs Lịch chiếu và Đánh giá */}
-        <div className="mt-10 w-full max-w-5xl mx-auto bg-white px-5 py-5 flex-grow mb-2 rounded-md	">
-          <Tabs defaultActiveKey="1" centered >
+        <div className="mt-10 w-full max-w-5xl mx-auto bg-white px-5 py-5 flex-grow mb-2 rounded-md overflow-auto">
+          <Tabs defaultActiveKey="1" centered responsive>
             {/* Tab Lịch chiếu */}
             <TabPane tab="Lịch chiếu" key="1">
-              <Tabs tabPosition="left">
+              <Tabs tabPosition="left" className="w-full">
                 {FilmDetail?.heThongRapChieu?.map((htr) => (
                   <TabPane
                     tab={
                       <div className="flex items-center">
                         <img
                           src={htr.logo}
-                          className="rounded-full"
-                          style={{ width: 50, height: 50 }}
+                          className="rounded-full w-12 h-12"
                           alt={htr.tenHeThongRap}
                         />
                         <span className="ml-2">{htr.tenHeThongRap}</span>
@@ -152,20 +144,19 @@ export default function Detail() {
                           <img
                             src={cumRap.hinhAnh}
                             alt={cumRap.tenCumRap}
-                            style={{ width: 60, height: 60 }}
-                            className="object-cover rounded"
+                            className="object-cover rounded w-10 h-10"
                           />
                           <div className="ml-2">
                             <p className="text-lg font-bold">{cumRap.tenCumRap}</p>
                             <p className="text-gray-400">{cumRap.diaChi}</p>
                           </div>
                         </div>
-                        <div className="thong-tin-lich-chieu grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mt-2">
+                        <div className="thong-tin-lich-chieu grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 mt-2">
                           {cumRap.lichChieuPhim?.slice(0, 12).map((lichChieu) => (
                             <NavLink
                               to={kiemTraDangNhap(lichChieu)}
                               key={lichChieu.maLichChieu}
-                              className="block text-green-800 font-bold text-center border border-green-800 rounded p-2 hover:bg-green-800 hover:text-white transition"
+                              className="block text-green-800 font-bold text-center border border-green-800 rounded p-2 hover:bg-green-800 hover:text-white transition w-24"
                             >
                               {moment(lichChieu.ngayChieuGioChieu).format('hh:mm A')}
                             </NavLink>
