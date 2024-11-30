@@ -77,7 +77,14 @@ export default function Detail() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen" 
+    style={{
+      backgroundImage: `url(${FilmDetail?.hinhAnh})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }}
+    
+    >
       <div className="upper-layer w-full flex-grow flex flex-col transparent-black-background">
         {/* Thông tin phim */}
         <div className="grid grid-cols-12 gap-4">
@@ -119,55 +126,85 @@ export default function Detail() {
         </div>
 
         {/* Tabs Lịch chiếu và Đánh giá */}
-        <div className="mt-10 w-full max-w-5xl mx-auto bg-white px-5 py-5 flex-grow mb-2 rounded-md overflow-auto">
-          <Tabs defaultActiveKey="1" centered responsive>
-            {/* Tab Lịch chiếu */}
-            <TabPane tab="Lịch chiếu" key="1">
-              <Tabs tabPosition="left" className="w-full">
-                {FilmDetail?.heThongRapChieu?.map((htr) => (
-                  <TabPane
-                    tab={
-                      <div className="flex items-center">
-                        <img
-                          src={htr.logo}
-                          className="rounded-full w-12 h-12"
-                          alt={htr.tenHeThongRap}
-                        />
-                        <span className="ml-2">{htr.tenHeThongRap}</span>
-                      </div>
-                    }
-                    key={htr.maHeThongRap}
-                  >
-                    {htr.cumRapChieu?.map((cumRap) => (
-                      <div className="mt-5" key={cumRap.maCumRap}>
-                        <div className="flex items-center">
-                          <img
-                            src={cumRap.hinhAnh}
-                            alt={cumRap.tenCumRap}
-                            className="object-cover rounded w-10 h-10"
-                          />
-                          <div className="ml-2">
-                            <p className="text-lg font-bold">{cumRap.tenCumRap}</p>
-                            <p className="text-gray-400">{cumRap.diaChi}</p>
-                          </div>
-                        </div>
-                        <div className="thong-tin-lich-chieu grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 mt-2">
-                          {cumRap.lichChieuPhim?.slice(0, 12).map((lichChieu) => (
-                            <NavLink
-                              to={kiemTraDangNhap(lichChieu)}
-                              key={lichChieu.maLichChieu}
-                              className="block text-green-800 font-bold text-center border border-green-800 rounded p-2 hover:bg-green-800 hover:text-white transition w-24"
-                            >
-                              {moment(lichChieu.ngayChieuGioChieu).format('hh:mm A')}
-                            </NavLink>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </TabPane>
-                ))}
-              </Tabs>
-            </TabPane>
+        <div className="mt-10 w-full max-w-5xl mx-auto bg-white px-5 py-5 flex-grow mb-2 rounded-md	">
+            <Tabs defaultActiveKey="1" centered >
+              {/* Tab Lịch chiếu */}
+              <TabPane tab="Lịch chiếu" key="1">
+                <Tabs tabPosition="left">
+                  {FilmDetail?.heThongRapChieu?.map((htr) => (
+                      <TabPane
+                          tab={
+                            <div className="flex items-center">
+                              <img
+                                  src={htr.logo}
+                                  className="rounded-full"
+                                  style={{ width: 50, height: 50 }}
+                                  alt={htr.tenHeThongRap}
+                              />
+                              <span className="ml-2">{htr.tenHeThongRap}</span>
+                            </div>
+                          }
+                          key={htr.maHeThongRap}
+                      >
+                        {htr.cumRapChieu?.map((cumRap) => (
+                            <div className="mt-5" key={cumRap.maCumRap}>
+                              <div className="flex items-center">
+                                <img
+                                    src={cumRap.hinhAnh}
+                                    alt={cumRap.tenCumRap}
+                                    style={{ width: 60, height: 60 }}
+                                    className="object-cover rounded"
+                                />
+                                <div className="ml-2">
+                                  <p className="text-lg font-bold">{cumRap.tenCumRap}</p>
+                                  <p className="text-gray-400">{cumRap.diaChi}</p>
+                                </div>
+                              </div>
+                              <div className="thong-tin-lich-chieu mt-2">
+                                {/* Nhóm lịch chiếu theo ngày, chỉ lấy lịch chiếu từ hôm nay trở đi */}
+                                {cumRap.lichChieuPhim && Object.entries(
+                                    cumRap.lichChieuPhim.reduce((acc, lichChieu) => {
+                                      const date = moment(lichChieu.ngayChieuGioChieu).format('DD/MM/YYYY');
+                                      if (!acc[date]) {
+                                        acc[date] = [];
+                                      }
+                                      acc[date].push(lichChieu);
+                                      return acc;
+                                    }, {})
+                                ).filter(([date, lichChieuList]) => {
+                                  // Kiểm tra ngày chiếu có lớn hơn hoặc bằng ngày hiện tại
+                                  return moment(date, 'DD/MM/YYYY').isSameOrAfter(moment(), 'day');
+                                }).map(([date, lichChieuList]) => (
+                                    <div key={date} className="mt-4">
+                                      {/* Tiêu đề ngày chiếu bằng tiếng Việt */}
+                                      <h3 className="text-xl font-semibold text-gray-800">
+                                        {moment(date, 'DD/MM/YYYY')
+                                            .locale('vi')
+                                            .format('dddd, DD/MM/YYYY')
+                                            .replace(/^\w/, (c) => c.toUpperCase())} {/* Chuyển chữ đầu thành chữ hoa */}
+                                      </h3>
+                                      {/* Hiển thị các giờ chiếu */}
+                                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mt-2">
+                                        {lichChieuList.map((lichChieu) => (
+                                            <NavLink
+                                                to={kiemTraDangNhap(lichChieu)}
+                                                key={lichChieu.maLichChieu}
+                                                className="block text-green-800 font-bold text-center border border-green-800 rounded p-2 hover:bg-green-800 hover:text-white transition"
+                                            >
+                                              {moment(lichChieu.ngayChieuGioChieu).format('hh:mm A')}
+                                            </NavLink>
+                                        ))}
+                                      </div>
+                                    </div>
+                                ))}
+                              </div>
+                            </div>
+                        ))}
+                      </TabPane>
+                  ))}
+                </Tabs>
+              </TabPane>
+
 
             {/* Tab Đánh giá */}
             <TabPane tab="Đánh giá" key="3" style={{ minHeight: 300 }}>

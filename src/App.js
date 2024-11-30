@@ -41,7 +41,6 @@ function App() {
         <Route path='/admin/Films/addnew' element={<AdminTemplate Component={AddNew} />} />
         <Route path='/admin/users' element={<AdminTemplate Component={Dashboard} />} />
         <Route path='/admin/Films/ShowTime/:id/:tenphim' element={<AdminTemplate Component={ShowTime} />} />
-
         <Route path='/admin/Films/ShowTime' element={<AdminTemplate Component={ShowTime} />} />
 
 
